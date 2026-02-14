@@ -1,6 +1,7 @@
 package client;
 
 import constants.ApiConstants;
+import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 import model.OrderRequest;
 
@@ -8,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderClient extends BaseClient {
+
+    @Step("Создать заказ с авторизацией")
     public ValidatableResponse createOrder(OrderRequest order, String token) {
         return getSpecWithAuth(token)
                 .body(order)
@@ -17,6 +20,7 @@ public class OrderClient extends BaseClient {
                 .log().all();
     }
 
+    @Step("Создать заказ без авторизации")
     public ValidatableResponse createOrderWithoutAuth(OrderRequest order) {
         return getSpec()
                 .body(order)
@@ -26,11 +30,13 @@ public class OrderClient extends BaseClient {
                 .log().all();
     }
 
+    @Step("Создать заказ с ингредиентами {ingredients}")
     public ValidatableResponse createOrderWithIngredients(List<String> ingredients, String token) {
         OrderRequest order = new OrderRequest(ingredients);
         return createOrder(order, token);
     }
 
+    @Step("Получить ингредиенты")
     public ValidatableResponse getIngredients() {
         return getSpec()
                 .when()
@@ -39,6 +45,7 @@ public class OrderClient extends BaseClient {
                 .log().all();
     }
 
+    @Step("Получить заказы пользователя")
     public ValidatableResponse getUserOrders(String token) {
         return getSpecWithAuth(token)
                 .when()
@@ -47,6 +54,7 @@ public class OrderClient extends BaseClient {
                 .log().all();
     }
 
+    @Step("Получить все заказы")
     public ValidatableResponse getAllOrders() {
         return getSpec()
                 .when()
@@ -55,13 +63,12 @@ public class OrderClient extends BaseClient {
                 .log().all();
     }
 
+    @Step("Извлечь номер заказа из ответа")
     public Integer extractOrderNumber(ValidatableResponse response) {
         return response.extract().path("order.number");
     }
 
-    /**
-     * Получить реальные ингредиенты из API
-     */
+    @Step("Получить реальные ингредиенты из API")
     public List<String> getActualIngredientIds() {
         ValidatableResponse response = getIngredients();
         List<String> ingredients = new ArrayList<>();
@@ -72,21 +79,17 @@ public class OrderClient extends BaseClient {
                 ingredients = new ArrayList<>();
             }
         } catch (Exception e) {
-            // Если не удалось получить ингредиенты, используем тестовые
             ingredients = new ArrayList<>();
         }
 
         return ingredients;
     }
 
-    /**
-     * Создать заказ с реальными ингредиентами из API
-     */
+    @Step("Создать заказ с реальными ингредиентами")
     public ValidatableResponse createOrderWithActualIngredients(String token) {
         List<String> actualIngredients = getActualIngredientIds();
 
         if (actualIngredients.isEmpty() || actualIngredients.size() < 2) {
-            // Если не получили ингредиенты, используем тестовые
             OrderRequest order = new OrderRequest(List.of(
                     ApiConstants.BUN_1,
                     ApiConstants.SAUCE_1

@@ -26,6 +26,14 @@ public class OrderCreationTests extends BaseTest {
     private String accessToken;
     private List<String> actualIngredients;
 
+    // Константы индексов вместо magicNumbers
+    private static final int FIRST_INGREDIENT_INDEX = 0;
+    private static final int SECOND_INGREDIENT_INDEX = 1;
+    private static final int THIRD_INGREDIENT_INDEX = 2;
+
+    // Единое сообщение для неправильных ингредиентов
+    private static final String NEGATIVE_MESSAGE = "Ingredient ids must be provided";
+
     public OrderCreationTests() {
         setupAllure();
     }
@@ -55,99 +63,85 @@ public class OrderCreationTests extends BaseTest {
         actualIngredients = null;
     }
 
-    //создание заказа с авторизацией
     @Test
     @DisplayName("Создание заказа с авторизацией")
     @Description("Проверка создания заказа авторизованным пользователем")
     public void createOrderWithAuthShouldSucceed() {
         if (actualIngredients.size() >= 3) {
             OrderRequest order = new OrderRequest(Arrays.asList(
-                    actualIngredients.get(0),
-                    actualIngredients.get(1),
-                    actualIngredients.get(2)
+                    actualIngredients.get(FIRST_INGREDIENT_INDEX),
+                    actualIngredients.get(SECOND_INGREDIENT_INDEX),
+                    actualIngredients.get(THIRD_INGREDIENT_INDEX)
             ));
 
             orderClient.createOrder(order, accessToken)
+                    // Исправлено: код ответа единый OK
                     .assertThat()
-                    .statusCode(anyOf(
-                            equalTo(ApiConstants.StatusCodes.OK),
-                            equalTo(ApiConstants.StatusCodes.BAD_REQUEST)
-                    ))
-                    .body("success", anyOf(equalTo(true), equalTo(false)));
+                    .statusCode(ApiConstants.StatusCodes.OK)
+                    .body("success", equalTo(true));
         }
     }
 
-    //без авторизации
     @Test
     @DisplayName("Создание заказа без авторизации")
     @Description("Проверка создания заказа неавторизованным пользователем")
     public void createOrderWithoutAuthShouldSucceed() {
         if (!actualIngredients.isEmpty()) {
             OrderRequest order = new OrderRequest(
-                    Collections.singletonList(actualIngredients.get(0))
+                    Collections.singletonList(actualIngredients.get(FIRST_INGREDIENT_INDEX))
             );
 
             orderClient.createOrderWithoutAuth(order)
+                    // Исправлено: код ответа единый OK
                     .assertThat()
-                    .statusCode(anyOf(
-                            equalTo(ApiConstants.StatusCodes.OK),
-                            equalTo(ApiConstants.StatusCodes.BAD_REQUEST)
-                    ));
+                    .statusCode(ApiConstants.StatusCodes.OK)
+                    .body("success", equalTo(true));
         }
     }
 
-    //с ингредиентами
     @Test
     @DisplayName("Создание заказа с ингредиентами")
     @Description("Проверка создания заказа с разными комбинациями ингредиентов")
     public void createOrderWithIngredientsShouldSucceed() {
         if (!actualIngredients.isEmpty()) {
             OrderRequest singleIngredientOrder = new OrderRequest(
-                    Collections.singletonList(actualIngredients.get(0))
+                    Collections.singletonList(actualIngredients.get(FIRST_INGREDIENT_INDEX))
             );
 
             orderClient.createOrder(singleIngredientOrder, accessToken)
+                    // Исправлено: код ответа единый OK
                     .assertThat()
-                    .statusCode(anyOf(
-                            equalTo(ApiConstants.StatusCodes.OK),
-                            equalTo(ApiConstants.StatusCodes.BAD_REQUEST)
-                    ));
+                    .statusCode(ApiConstants.StatusCodes.OK)
+                    .body("success", equalTo(true));
         }
     }
 
-    //без ингредиентов (пустой массив)
     @Test
     @DisplayName("Создание заказа без ингредиентов (пустой массив)")
     @Description("Проверка создания заказа с пустым списком ингредиентов")
     public void createOrderWithoutIngredientsEmptyArrayShouldFail() {
         OrderRequest order = new OrderRequest(Collections.emptyList());
         orderClient.createOrder(order, accessToken)
+                // Исправлено: единый код ответа и единый message
                 .assertThat()
                 .statusCode(ApiConstants.StatusCodes.BAD_REQUEST)
                 .body("success", equalTo(false))
-                .body("message", anyOf(
-                        equalTo(ApiConstants.ErrorMessages.INGREDIENTS_REQUIRED),
-                        equalTo(ApiConstants.ErrorMessages.INVALID_INGREDIENTS)
-                ));
+                .body("message", equalTo(NEGATIVE_MESSAGE));
     }
 
-    //без ингредиентов (null)
     @Test
     @DisplayName("Создание заказа без ингредиентов (null)")
     @Description("Проверка создания заказа с null вместо массива ингредиентов")
     public void createOrderWithoutIngredientsNullShouldFail() {
         OrderRequest order = new OrderRequest(null);
         orderClient.createOrder(order, accessToken)
+                // Исправлено: единый код ответа и единый message
                 .assertThat()
                 .statusCode(ApiConstants.StatusCodes.BAD_REQUEST)
                 .body("success", equalTo(false))
-                .body("message", anyOf(
-                        equalTo(ApiConstants.ErrorMessages.INGREDIENTS_REQUIRED),
-                        equalTo(ApiConstants.ErrorMessages.INVALID_INGREDIENTS)
-                ));
+                .body("message", equalTo(NEGATIVE_MESSAGE));
     }
 
-    //с неверным хешем ингредиентов
     @Test
     @DisplayName("Создание заказа с неверным хешем ингредиентов")
     @Description("Проверка создания заказа с невалидными хешами ингредиентов")
@@ -156,12 +150,11 @@ public class OrderCreationTests extends BaseTest {
                 Collections.singletonList(ApiConstants.INVALID)
         );
 
-        orderClient.createOrder(order, accessToken)
-                .assertThat()
-                .statusCode(anyOf(
-                        equalTo(ApiConstants.StatusCodes.INTERNAL_SERVER_ERROR),
-                        equalTo(ApiConstants.StatusCodes.BAD_REQUEST)
-                ));
+        var response = orderClient.createOrder(order, accessToken);
+        // Исправлено: единый код ответа и единый message
+        response.assertThat()
+                .statusCode(ApiConstants.StatusCodes.BAD_REQUEST)
+                .body("success", equalTo(false))
+                .body("message", equalTo(NEGATIVE_MESSAGE));
     }
-
 }

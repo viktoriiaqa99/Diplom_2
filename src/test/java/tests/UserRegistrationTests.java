@@ -7,23 +7,25 @@ import io.qameta.allure.junit4.DisplayName;
 import model.User;
 import org.junit.Test;
 import utils.TestDataGenerator;
+import org.junit.Before;
 
 import static org.hamcrest.Matchers.*;
 
 public class UserRegistrationTests extends BaseTest {
     private final UserClient userClient = new UserClient();
 
-    public UserRegistrationTests() {
+    @Before
+    public void setup() {
         setupAllure();
     }
 
-    //создать уникального пользователя
+    // Создать уникального пользователя
     @Test
     @DisplayName("Создание уникального пользователя")
     @Description("Проверка успешной регистрации нового пользователя с уникальными данными")
     public void createUniqueUserSuccessfully() {
         User uniqueUser = TestDataGenerator.generateUniqueUser();
-        userClient.register(uniqueUser)
+        var response = userClient.register(uniqueUser)
                 .assertThat()
                 .statusCode(ApiConstants.StatusCodes.OK)
                 .body("success", equalTo(true))
@@ -31,15 +33,21 @@ public class UserRegistrationTests extends BaseTest {
                 .body("user.name", equalTo(uniqueUser.getName()))
                 .body("accessToken", startsWith(ApiConstants.BEARER_PREFIX))
                 .body("refreshToken", notNullValue());
+
+        // Удаляем созданного пользователя
+        String accessToken = userClient.extractAccessToken(response);
+        if (accessToken != null) {
+            userClient.delete(accessToken);
+        }
     }
 
-    //создать пользователя, который уже зарегистрирован
+    // Создать пользователя, который уже зарегистрирован
     @Test
     @DisplayName("Создание пользователя, который уже зарегистрирован")
     @Description("Проверка, что нельзя создать пользователя с уже существующим email")
     public void createExistingUserShouldFail() {
         User existingUser = TestDataGenerator.generateUniqueUser();
-        userClient.register(existingUser)
+        var firstResponse = userClient.register(existingUser)
                 .assertThat()
                 .statusCode(ApiConstants.StatusCodes.OK);
 
@@ -48,9 +56,15 @@ public class UserRegistrationTests extends BaseTest {
                 .statusCode(ApiConstants.StatusCodes.FORBIDDEN)
                 .body("success", equalTo(false))
                 .body("message", equalTo(ApiConstants.ErrorMessages.USER_ALREADY_EXISTS));
+
+        // Удаляем созданного пользователя
+        String firstAccessToken = userClient.extractAccessToken(firstResponse);
+        if (firstAccessToken != null) {
+            userClient.delete(firstAccessToken);
+        }
     }
 
-    //не заполнить поле Email
+    // Не заполнить поле Email
     @Test
     @DisplayName("Создание пользователя без email")
     @Description("Проверка обязательности поля email при регистрации")
@@ -63,7 +77,7 @@ public class UserRegistrationTests extends BaseTest {
                 .body("message", equalTo(ApiConstants.ErrorMessages.REQUIRED_FIELDS));
     }
 
-    //не заполнить поле Password
+    // Не заполнить поле Password
     @Test
     @DisplayName("Создание пользователя без пароля")
     @Description("Проверка обязательности поля password при регистрации")
@@ -76,7 +90,7 @@ public class UserRegistrationTests extends BaseTest {
                 .body("message", equalTo(ApiConstants.ErrorMessages.REQUIRED_FIELDS));
     }
 
-    //не заполнить поле Name
+    // Не заполнить поле Name
     @Test
     @DisplayName("Создание пользователя без имени")
     @Description("Проверка обязательности поля name при регистрации")

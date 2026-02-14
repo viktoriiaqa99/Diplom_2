@@ -1,5 +1,7 @@
 package constants;
 
+import static org.apache.http.HttpStatus.*;
+
 public class ApiConstants {
     public static final String BASE_URI = "https://stellarburgers.education-services.ru";
     public static final String API_PREFIX = "/api";
@@ -33,7 +35,7 @@ public class ApiConstants {
     public static final String MAIN_3 = "643d69a5c3f7b9001cfa0945";
     public static final String MAIN_4 = "643d69a5c3f7b9001cfa0946";
 
-    public static final String INVALID = "invalid_hash_12345";
+    public static final String INVALID = "invalid643d69a5c3f7b9001cfa0946";
     public static final String[] VALID_INGREDIENTS = {BUN_1, BUN_2, SAUCE_1, SAUCE_2, MAIN_1, MAIN_2, MAIN_3, MAIN_4};
 
     // вложенные классы
@@ -49,13 +51,14 @@ public class ApiConstants {
         public static final String LOGOUT_SUCCESS = "Successful logout";
     }
 
+    // Исправлено: вместо числовых кодов ответов - коды из библиотеки static org.apache.http.HttpStatus
     public static final class StatusCodes {
-        public static final int OK = 200;
-        public static final int BAD_REQUEST = 400;
-        public static final int UNAUTHORIZED = 401;
-        public static final int FORBIDDEN = 403;
-        public static final int INTERNAL_SERVER_ERROR = 500;
-        public static final int ACCEPTED = 202;
+        public static final int OK = SC_OK;
+        public static final int BAD_REQUEST = SC_BAD_REQUEST;
+        public static final int UNAUTHORIZED = SC_UNAUTHORIZED;
+        public static final int FORBIDDEN = SC_FORBIDDEN;
+        public static final int INTERNAL_SERVER_ERROR = SC_INTERNAL_SERVER_ERROR;
+        public static final int ACCEPTED = SC_ACCEPTED;
     }
 
     public static final class OrderStatus {
