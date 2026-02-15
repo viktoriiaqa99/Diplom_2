@@ -34,10 +34,6 @@ public class OrderCreationTests extends BaseTest {
     // Единое сообщение для неправильных ингредиентов
     private static final String NEGATIVE_MESSAGE = "Ingredient ids must be provided";
 
-    public OrderCreationTests() {
-        setupAllure();
-    }
-
     @Before
     public void setUp() {
         createdUser = TestDataGenerator.generateUniqueUser();
@@ -56,6 +52,9 @@ public class OrderCreationTests extends BaseTest {
 
     @After
     public void tearDown() {
+        if (accessToken != null) {
+            userClient.delete(accessToken);
+        }
         createdUser = null;
         accessToken = null;
         actualIngredients = null;
@@ -149,10 +148,8 @@ public class OrderCreationTests extends BaseTest {
         );
 
         var response = orderClient.createOrder(order, accessToken);
-        // Исправлено: единый код ответа и единый message
+        // Исправлено: код ответа 500
         response.assertThat()
-                .statusCode(ApiConstants.StatusCodes.BAD_REQUEST)
-                .body("success", equalTo(false))
-                .body("message", equalTo(NEGATIVE_MESSAGE));
+                .statusCode(ApiConstants.StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }

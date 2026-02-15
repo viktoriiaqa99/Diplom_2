@@ -18,10 +18,6 @@ public class UserLoginTests extends BaseTest {
     private User createdUser;
     private String accessToken;
 
-    public UserLoginTests() {
-        setupAllure();
-    }
-
     @Before
     public void setUp() {
         createdUser = TestDataGenerator.generateUniqueUser();
@@ -32,6 +28,9 @@ public class UserLoginTests extends BaseTest {
 
     @After
     public void tearDown() {
+        if (accessToken != null) {
+            userClient.delete(accessToken);
+        }
         createdUser = null;
         accessToken = null;
     }

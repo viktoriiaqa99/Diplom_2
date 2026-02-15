@@ -7,16 +7,26 @@ import io.qameta.allure.junit4.DisplayName;
 import model.User;
 import org.junit.Test;
 import utils.TestDataGenerator;
+import org.junit.After;
 import org.junit.Before;
 
 import static org.hamcrest.Matchers.*;
 
 public class UserRegistrationTests extends BaseTest {
     private final UserClient userClient = new UserClient();
+    private String accessToken;
 
     @Before
     public void setup() {
         setupAllure();
+    }
+
+    @After
+    public void tearDown() {
+        if (accessToken != null) {
+            userClient.delete(accessToken);
+        }
+        accessToken = null;
     }
 
     // Создать уникального пользователя
@@ -35,10 +45,7 @@ public class UserRegistrationTests extends BaseTest {
                 .body("refreshToken", notNullValue());
 
         // Удаляем созданного пользователя
-        String accessToken = userClient.extractAccessToken(response);
-        if (accessToken != null) {
-            userClient.delete(accessToken);
-        }
+        accessToken = userClient.extractAccessToken(response);
     }
 
     // Создать пользователя, который уже зарегистрирован
@@ -58,10 +65,7 @@ public class UserRegistrationTests extends BaseTest {
                 .body("message", equalTo(ApiConstants.ErrorMessages.USER_ALREADY_EXISTS));
 
         // Удаляем созданного пользователя
-        String firstAccessToken = userClient.extractAccessToken(firstResponse);
-        if (firstAccessToken != null) {
-            userClient.delete(firstAccessToken);
-        }
+        accessToken = userClient.extractAccessToken(firstResponse);
     }
 
     // Не заполнить поле Email
