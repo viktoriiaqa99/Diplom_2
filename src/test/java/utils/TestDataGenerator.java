@@ -55,7 +55,7 @@ public class TestDataGenerator {
     public static String getRandomIngredient() {
         String[] ingredients = ApiConstants.VALID_INGREDIENTS;
         if (ingredients.length == 0) {
-            return ApiConstants.BUN_1;
+            return ingredients[0];
         }
         int randomIndex = (int) (Math.random() * ingredients.length);
         return ingredients[randomIndex];
@@ -66,7 +66,7 @@ public class TestDataGenerator {
         String[] validIngredients = ApiConstants.VALID_INGREDIENTS;
 
         if (validIngredients.length == 0) {
-            ingredients.add(ApiConstants.BUN_1);
+            ingredients.add(validIngredients[0]);
             return ingredients;
         }
 

@@ -91,16 +91,13 @@ public class OrderClient extends BaseClient {
 
         if (actualIngredients.isEmpty() || actualIngredients.size() < 2) {
             OrderRequest order = new OrderRequest(List.of(
-                    ApiConstants.BUN_1,
-                    ApiConstants.SAUCE_1
+                    ApiConstants.VALID_INGREDIENTS[0],
+                    ApiConstants.VALID_INGREDIENTS[1]
             ));
             return createOrder(order, token);
         }
 
-        OrderRequest order = new OrderRequest(List.of(
-                actualIngredients.get(0),
-                actualIngredients.get(1)
-        ));
+        OrderRequest order = new OrderRequest(actualIngredients);
         return createOrder(order, token);
     }
 }

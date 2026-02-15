@@ -26,17 +26,47 @@ public class ApiConstants {
     public static final String INGREDIENTS_PATH = API_PREFIX + "/ingredients";
 
     // Ингредиенты
-    public static final String BUN_1 = "643d69a5c3f7b9001cfa093c";
-    public static final String BUN_2 = "643d69a5c3f7b9001cfa093d";
-    public static final String SAUCE_1 = "643d69a5c3f7b9001cfa0943";
-    public static final String SAUCE_2 = "643d69a5c3f7b9001cfa0944";
-    public static final String MAIN_1 = "643d69a5c3f7b9001cfa093e";
-    public static final String MAIN_2 = "643d69a5c3f7b9001cfa0941";
-    public static final String MAIN_3 = "643d69a5c3f7b9001cfa0945";
-    public static final String MAIN_4 = "643d69a5c3f7b9001cfa0946";
+    // Булки
+    public static final String BUN_FLUORESCENT = "643d69a5c3f7b9001cfa093c";
+    public static final String BUN_CRATER = "643d69a5c3f7b9001cfa093d";
+
+    // Соусы
+    public static final String SAUCE_SPICY = "643d69a5c3f7b9001cfa0943";
+    public static final String SAUCE_GALACTIC = "643d69a5c3f7b9001cfa0944";
+    public static final String SAUCE_TRADITIONAL_GALACTIC = "61c0c5a71d1f82001bdaaa74";
+    public static final String SAUCE_ANTARIAN_SPIKES = "61c0c5a71d1f82001bdaaa75";
+
+    // Начинки
+    public static final String FILLING_PROTOSOMIA = "643d69a5c3f7b9001cfa093e";
+    public static final String FILLING_METEORITE = "643d69a5c3f7b9001cfa0941";
+    public static final String FILLING_MARS = "643d69a5c3f7b9001cfa0945";
+    public static final String FILLING_LUMINESCENT_FISH = "643d69a5c3f7b9001cfa0946";
+    public static final String FILLING_CRISPY_MINERAL_RINGS = "61c0c5a71d1f82001bdaaa76";
+    public static final String FILLING_FALLENIAN_TREE_FRUITS = "61c0c5a71d1f82001bdaaa77";
+    public static final String FILLING_MARTIAN_ALPHA_SUGARS = "61c0c5a71d1f82001bdaaa78";
+    public static final String FILLING_EXO_PLANTAGO_SALAD = "61c0c5a71d1f82001bdaaa79";
+    public static final String FILLING_ASTEROID_MOLD_CHEESE = "61c0c5a71d1f82001bdaaa7a";
+
 
     public static final String INVALID = "invalid643d69a5c3f7b9001cfa0946";
-    public static final String[] VALID_INGREDIENTS = {BUN_1, BUN_2, SAUCE_1, SAUCE_2, MAIN_1, MAIN_2, MAIN_3, MAIN_4};
+    // Все валидные ингредиенты
+    public static final String[] VALID_INGREDIENTS = {
+            BUN_FLUORESCENT,
+            BUN_CRATER,
+            SAUCE_SPICY,
+            SAUCE_GALACTIC,
+            SAUCE_TRADITIONAL_GALACTIC,
+            SAUCE_ANTARIAN_SPIKES,
+            FILLING_PROTOSOMIA,
+            FILLING_METEORITE,
+            FILLING_MARS,
+            FILLING_LUMINESCENT_FISH,
+            FILLING_CRISPY_MINERAL_RINGS,
+            FILLING_FALLENIAN_TREE_FRUITS,
+            FILLING_MARTIAN_ALPHA_SUGARS,
+            FILLING_EXO_PLANTAGO_SALAD,
+            FILLING_ASTEROID_MOLD_CHEESE
+    };
 
     // вложенные классы
     public static final class ErrorMessages {

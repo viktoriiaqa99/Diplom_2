@@ -49,9 +49,7 @@ public class OrderCreationTests extends BaseTest {
         actualIngredients = orderClient.getActualIngredientIds();
         if (actualIngredients.isEmpty()) {
             actualIngredients = new ArrayList<>(Arrays.asList(
-                    ApiConstants.BUN_1,
-                    ApiConstants.BUN_2,
-                    ApiConstants.SAUCE_1
+                    ApiConstants.VALID_INGREDIENTS
             ));
         }
     }
